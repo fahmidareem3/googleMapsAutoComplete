@@ -1,86 +1,87 @@
-import { useState } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
-import MapView, { Callout, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { useState } from "react";
+import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
+import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
 const TeamDetails = ({ setLoading }) => {
   const styles = StyleSheet.create({
     button: {
-      backgroundColor: '#31006E',
+      backgroundColor: "#31006E",
       width: 140,
       paddingVertical: 10,
       borderRadius: 5,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white'
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      color: "white",
     },
     buttonText: {
-      color: 'white'
+      color: "white",
     },
     circleBottom: {
       width: 351,
       height: 351,
       borderRadius: 351,
-      backgroundColor: '#31006E',
-      position: 'absolute',
+      backgroundColor: "#31006E",
+      position: "absolute",
       bottom: -375,
-      right: -200
+      right: -200,
     },
     circleTop: {
       width: 351,
       height: 351,
       borderRadius: 351,
-      backgroundColor: 'orange',
-      position: 'absolute',
+      backgroundColor: "orange",
+      position: "absolute",
       top: -375,
-      left: -200
+      left: -200,
     },
     logoContainer: {
-      justifyContent: 'center',
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginVertical: 10
+      justifyContent: "center",
+      flexDirection: "row",
+      alignItems: "center",
+      marginVertical: 10,
     },
     logo: {
       width: 60,
       height: 60,
-      marginTop: -3
+      marginTop: -3,
     },
     seperator: {
-      color: '#7D7D7D',
-      textAlign: 'center',
+      color: "#7D7D7D",
+      textAlign: "center",
       marginTop: 15,
-      fontSize: 10
+      fontSize: 10,
     },
     teamName: {
-      color: '#31006E',
+      color: "#31006E",
       fontSize: 46,
-      fontWeight: '900'
+      fontWeight: "900",
     },
     teamMember: {
       marginTop: 15,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
+      flexDirection: "row",
+      justifyContent: "space-between",
       paddingHorizontal: 20,
-      borderColor: '#31006E',
+      borderColor: "#31006E",
       borderWidth: 1,
       borderRadius: 5,
       paddingVertical: 10,
-      marginBottom: 60
+      marginBottom: 60,
     },
     teamMemberName: {
       fontSize: 12,
-      fontWeight: '400',
-      color: '#31006E'
-    }
+      fontWeight: "400",
+      color: "#31006E",
+    },
   });
   return (
     <View>
       <View style={styles.logoContainer}>
         <Image
           style={styles.logo}
-          resizeMode={'contain'}
-          source={require('./assets/logo.png')}
+          resizeMode={"contain"}
+          source={require("./assets/logo.png")}
         />
         <Text style={styles.teamName}>Locatory</Text>
       </View>
@@ -108,7 +109,13 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [marker, setMarker] = useState({
     latitude: 23.7338,
-    longitude: 90.3929
+    longitude: 90.3929,
+  });
+  const [region, setRegion] = useState({
+    latitude: 23.7338,
+    longitude: 90.3929,
+    latitudeDelta: 0.0012,
+    longitudeDelta: 0.0021,
   });
 
   return (
@@ -117,26 +124,65 @@ export default function App() {
         <TeamDetails setLoading={setLoading} />
       ) : (
         <>
+          <GooglePlacesAutocomplete
+            placeholder="Search"
+            fetchDetails={true}
+            GooglePlacesSearchQuery={{
+              rankby: "distance",
+            }}
+            onPress={(data, details = null) => {
+              // 'details' is provided when fetchDetails = true
+              console.log(data, details);
+              setRegion({
+                latitude: details.geometry.location.lat,
+                longitude: details.geometry.location.lng,
+                latitudeDelta: 0.0012,
+                longitudeDelta: 0.0021,
+              });
+            }}
+            query={{
+              key: "Your Api key",
+              language: "en",
+              components: "country:bd",
+              location: `${region.latitude},${region.longitude}`,
+            }}
+            styles={{
+              container: {
+                flex: 0,
+                position: "absolute",
+                width: "100%",
+                zIndex: 1,
+                top: -20,
+              },
+              listView: { backgroundColor: "white" },
+            }}
+          />
           <MapView
             style={styles.map}
             initialRegion={{
               latitude: 23.7338,
               longitude: 90.3929,
               latitudeDelta: 0.0012,
-              longitudeDelta: 0.0021
+              longitudeDelta: 0.0021,
             }}
             provider={PROVIDER_GOOGLE}
           >
             <Marker
+              coordinate={{
+                latitude: region.latitude,
+                longitude: region.longitude,
+              }}
+            />
+            <Marker
               coordinate={marker}
               draggable={true}
               onDragStart={(e) => {
-                console.log('Drag Start', e.nativeEvent.coordinate);
+                console.log("Drag Start", e.nativeEvent.coordinate);
               }}
               onDragEnd={(e) => {
                 setMarker({
                   latitude: e.nativeEvent.coordinate.latitude,
-                  longitude: e.nativeEvent.coordinate.longitude
+                  longitude: e.nativeEvent.coordinate.longitude,
                 });
               }}
             >
@@ -159,30 +205,31 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 60,
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
   map: {
-    width: '100%',
-    height: '100%'
+    width: "100%",
+    height: "100%",
   },
   button: {
-    backgroundColor: '#31006E',
+    backgroundColor: "#31006E",
     width: 140,
     paddingVertical: 10,
     borderRadius: 5,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "white",
     zIndex: 999,
-    position: 'absolute',
+    position: "absolute",
     bottom: 20,
-    right: 20
+    right: 20,
   },
   buttonText: {
-    color: 'white'
-  }
+    color: "white",
+  },
 });
