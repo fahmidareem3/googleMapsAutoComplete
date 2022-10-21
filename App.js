@@ -141,7 +141,7 @@ export default function App() {
               });
             }}
             query={{
-              key: "Your Api key",
+              key: "Your API Key",
               language: "en",
               components: "country:bd",
               location: `${region.latitude},${region.longitude}`,
@@ -162,6 +162,12 @@ export default function App() {
             initialRegion={{
               latitude: 23.7338,
               longitude: 90.3929,
+              latitudeDelta: 0.0012,
+              longitudeDelta: 0.0021,
+            }}
+            region={{
+              latitude: region.latitude,
+              longitude: region.longitude,
               latitudeDelta: 0.0012,
               longitudeDelta: 0.0021,
             }}
@@ -205,7 +211,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 60,
+    marginTop: 30,
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
