@@ -141,7 +141,7 @@ export default function App() {
               });
             }}
             query={{
-              key: "AIzaSyAe0hXkatw1I6pE9Dj-_4xaXK1PVcfDsxE",
+              key: "Your API key",
               language: "en",
               components: "country:bd",
               location: `${region.latitude},${region.longitude}`,
