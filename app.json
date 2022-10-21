@@ -25,7 +25,7 @@
       },
       "config": {
         "googleMaps": {
-          "apiKey": "Your API key"
+          "apiKey": "AIzaSyAe0hXkatw1I6pE9Dj-_4xaXK1PVcfDsxE"
         }
       },
       "package": "com.googleMap.locatory"
